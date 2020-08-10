@@ -7,6 +7,7 @@ import cv2
 import os.path
 import time
 import csv
+import imghdr
 
 ssl._create_default_https_context = ssl._create_unverified_context
 def get_images(keyword, num):
@@ -45,9 +46,10 @@ def put_csv(data):
         writer = csv.writer(file, lineterminator="\n")
         writer.writerows(data)
 
-# keyword = input("検索ワード:")
-keyword = "犬"
-print(keyword, "keyword")
+keyword = input("検索ワードを入力してください:")
+
+# keyword = "犬" # 画像項目固定の場合
+
 images = get_images(keyword, 10)
 
 # csv用の
@@ -56,18 +58,16 @@ csv_rows.append(["ファイル名", "サイズ", "フォーマット"])
 for i,image in enumerate(images):
     filename = keyword + "_" + str(i)
     imgpath = "./img/" + filename + ".png"
-    # print(download_img(image["src"], imgpath), 'download_img(image["src"], imgpath)')
     if download_img(image["src"], imgpath) == True:
+        ext = imghdr.what(imgpath)
+        print(ext, "ext")
         img = cv2.imread(imgpath)
-        # csvの行情報を追加。ファイル名,サイズ,拡張子
-        csv_rows.append([imgpath, get_size(img), os.path.splitext(imgpath)[1]])
-        put_converted_img(img, "./img_converted/" + filename + ".png")
+        # csvの行情報を追加。ファイル名,サイズ,フォーマット
+        csv_rows.append([imgpath, get_size(img), ext])
+        put_converted_img(img, "./img_converted/" + filename + "." + ext)
         time.sleep(1)
 
 put_csv(csv_rows)
-
-
-# with open('./img_date.csv', 'w') as f:
 
 
 print("OK")
