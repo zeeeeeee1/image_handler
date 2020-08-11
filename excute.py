@@ -4,7 +4,6 @@ import shutil
 import bs4
 import ssl
 import cv2
-import os.path
 import time
 import csv
 import imghdr
@@ -45,27 +44,29 @@ def put_csv(data, keyword):
         writer.writerows(data)
 
 keyword = input("検索ワードを入力してください:")
-
 # keyword = "犬" # 画像項目固定の場合
 
-images = get_images(keyword, 10)
-
-# csv用の
+# csvの行情報を定義
 csv_rows = []
 csv_rows.append(["ファイル名", "サイズ", "フォーマット"])
+
+# インターネット上から画像を取得
+images = get_images(keyword, 10)
 for i,image in enumerate(images):
     filename = keyword + "_" + str(i)
     imgpath = "./img/" + filename + ".png"
-    # 1秒間待つ
+    # サーバーの負荷を考慮して1秒間待つ
     time.sleep(1)
+    # 課題1 画像のダウンロード
     if download_img(image["src"], imgpath) == True:
         ext = imghdr.what(imgpath)
         img = cv2.imread(imgpath)
         # csvの行情報を追加。ファイル名,サイズ,フォーマット
         csv_rows.append([imgpath, get_size(img), ext])
+        # 課題３ 画像の変換
         put_converted_img(img, "./img_converted/" + filename + "." + ext)
 
+# 課題２ csvの保存
 put_csv(csv_rows, keyword)
-
 
 print("画像の保存、変換が完了しました。")
