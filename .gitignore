@@ -2,3 +2,5 @@ img/*
 !img/.gitkeep
 img_converted/*
 !img_converted/.gitkeep
+csv/*
+!csv/.gitkeep

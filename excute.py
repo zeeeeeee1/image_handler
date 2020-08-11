@@ -39,8 +39,8 @@ def get_size(img):
     height, width = img.shape[:2]
     return str(width) + "×" + str(height)
 
-def put_csv(data):
-    with open('data.csv', 'w') as file:
+def put_csv(data, keyword):
+    with open('./csv/' + keyword + '_data.csv', 'w') as file:
         writer = csv.writer(file, lineterminator="\n")
         writer.writerows(data)
 
@@ -65,7 +65,7 @@ for i,image in enumerate(images):
         csv_rows.append([imgpath, get_size(img), ext])
         put_converted_img(img, "./img_converted/" + filename + "." + ext)
 
-put_csv(csv_rows)
+put_csv(csv_rows, keyword)
 
 
 print("画像の保存、変換が完了しました。")
